@@ -1,0 +1,18 @@
+{
+  "4e8d1738-96ef-4a83-90bb-2b39636d2d5d": {
+    "id": "4e8d1738-96ef-4a83-90bb-2b39636d2d5d",
+    "title": "hi",
+    "created_at": "2026-04-21T15:47:34.717987",
+    "model": "xiaomi/mimo-v2-omni",
+    "messages": [
+      {
+        "role": "user",
+        "content": "hi"
+      },
+      {
+        "role": "assistant",
+        "content": "Hi there! 😊 I'm MiMo, your friendly AI assistant created by the Xiaomi LLM Core Team. How can I help you today?"
+      }
+    ]
+  }
+}

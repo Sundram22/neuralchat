@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeuralChat — Er. Sundram Tiwari</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <span class="brand-name">NeuralChat</span>
+      </div>
+      <button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Toggle sidebar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+
+    <button class="new-chat-btn" id="newChatBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>New Chat</span>
+    </button>
+
+    <div class="history-label">Recent Conversations</div>
+
+    <nav class="chat-history" id="chatHistory">
+      <div class="history-empty" id="historyEmpty">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <p>No conversations yet</p>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="dev-credit">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Er. Sundram Tiwari
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ══════════════════════════════════════════
+       MAIN AREA
+  ══════════════════════════════════════════ -->
+  <div class="main-container" id="mainContainer">
+
+    <!-- Top Navbar -->
+    <header class="topbar">
+      <button class="topbar-menu-btn" id="topbarMenuBtn" aria-label="Toggle sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+
+      <div class="topbar-center">
+        <div class="model-selector-wrap">
+          <svg class="model-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          <select class="model-select" id="modelSelect" aria-label="Select AI model">
+            {% for model in models %}
+            <option value="{{ model }}" {% if model == default_model %}selected{% endif %}>
+              {{ model }}
+            </option>
+            {% endfor %}
+          </select>
+          <svg class="select-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+
+      <div class="topbar-status" id="topbarStatus">
+        <span class="status-dot"></span>
+        <span class="status-text">Ready</span>
+      </div>
+    </header>
+
+    <!-- Chat Feed -->
+    <main class="chat-feed" id="chatFeed">
+
+      <!-- Welcome Screen -->
+      <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-glow"></div>
+        <div class="welcome-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <h1 class="welcome-title">NeuralChat</h1>
+        <p class="welcome-sub">Your intelligent AI companion, powered by the world's best models.</p>
+        <div class="welcome-chips">
+          <button class="chip" onclick="injectPrompt('Explain quantum computing in simple terms')">⚛️ Explain quantum computing</button>
+          <button class="chip" onclick="injectPrompt('Write a Python function to sort a list of dictionaries by a key')">💻 Write Python code</button>
+          <button class="chip" onclick="injectPrompt('Give me 5 creative startup ideas for 2025')">💡 Startup ideas for 2025</button>
+          <button class="chip" onclick="injectPrompt('Summarise the key differences between React and Vue')">📝 React vs Vue</button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Input Bar -->
+    <div class="input-zone">
+      <div class="input-container">
+        <div class="input-box">
+          <textarea
+            id="userInput"
+            class="chat-textarea"
+            placeholder="Message NeuralChat…"
+            rows="1"
+            aria-label="Type your message"
+          ></textarea>
+          <button class="send-button" id="sendBtn" aria-label="Send message" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+            </svg>
+          </button>
+        </div>
+        <p class="input-hint">NeuralChat may produce inaccurate information. Always verify critical facts.</p>
+      </div>
+    </div>
+
+  </div><!-- /main-container -->
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>Designed and Developed by <strong>Er. Sundram Tiwari</strong></p>
+  </footer>
+
+  <!-- Message Templates -->
+  <template id="tplUser">
+    <div class="msg msg-user">
+      <div class="msg-content">
+        <div class="bubble user-bubble"></div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tplAI">
+    <div class="msg msg-ai">
+      <div class="ai-avatar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div class="msg-content">
+        <div class="bubble ai-bubble"></div>
+        <div class="msg-meta">
+          <span class="model-badge"></span>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tplTyping">
+    <div class="msg msg-ai" id="typingIndicator">
+      <div class="ai-avatar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div class="msg-content">
+        <div class="bubble ai-bubble typing-bubble">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
