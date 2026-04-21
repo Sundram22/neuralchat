@@ -38,7 +38,6 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 CHATS_FILE = os.path.join(os.path.dirname(__file__), "data", "chats.json")
 
 AVAILABLE_MODELS = [
-    "anthropic/claude-sonnet-4.6",
     "qwen/qwen-2.5-7b-instruct",
     "minimax/minimax-m2.7",
     "deepseek/deepseek-v3.2-speciale",
