@@ -18,8 +18,15 @@ load_dotenv()
 app = Flask(__name__)
 
 @app.route("/")
-def home():
-    return render_template("index.html")
+def index():
+    return render_template("index.html", models=AVAILABLE_MODELS, default_model=DEFAULT_MODEL)
+    
+@app.route("/models")
+def get_models():
+    return jsonify({
+        "models": AVAILABLE_MODELS,
+        "default": DEFAULT_MODEL
+    })
 
 
 # ─────────────────────────────────────────────
@@ -94,10 +101,6 @@ def call_openrouter(messages: list, model: str) -> str:
 # ─────────────────────────────────────────────
 # Routes
 # ─────────────────────────────────────────────
-
-@app.route("/")
-def index():
-    return render_template("index.html", models=AVAILABLE_MODELS, default_model=DEFAULT_MODEL)
 
 
 @app.route("/chat", methods=["POST"])
@@ -229,6 +232,6 @@ def delete_chat(chat_id):
 if __name__ == "__main__":
     print("=" * 55)
     print("  NeuralChat — Designed by Er. Sundram Tiwari")
-    print("  Running at: http://localhost:5000")
+    print("HTTP-Referer: https://neuralchat-n0k0.onrender.com")
     print("=" * 55)
     app.run(debug=True, port=5000)
