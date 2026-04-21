@@ -794,3 +794,22 @@ body {
   .chip { text-align: center; }
   .msg-content { max-width: 90%; }
 }
+
+/* Mobile floating logo */
+.mobile-logo {
+  display: none;
+}
+
+/* Only mobile me show hoga */
+@media (max-width: 720px) {
+  .mobile-logo {
+    display: block;
+    position: fixed;
+    bottom: 10px;
+    left: 12px;
+    font-size: 11px;
+    color: var(--text-muted);
+    z-index: 999;
+    opacity: 0.7;
+  }
+}
