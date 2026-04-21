@@ -78,7 +78,7 @@ def call_openrouter(messages: list, model: str) -> str:
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "http://localhost:5000",
+        "HTTP-Referer": "https://neuralchat-n0k0.onrender.com",
         "X-Title": "NeuralChat by Er. Sundram Tiwari",
     }
     payload = {
