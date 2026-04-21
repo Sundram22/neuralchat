@@ -1,15 +1,11 @@
 "use strict";
 
-// ─────────────────────────────────────────────
 // State
-// ─────────────────────────────────────────────
 let currentChatId = null;
 let isLoading = false;
 let sidebarOpen = true;
 
-// ─────────────────────────────────────────────
-// DOM References
-// ─────────────────────────────────────────────
+// DOM
 const chatFeed      = document.getElementById("chatFeed");
 const userInput     = document.getElementById("userInput");
 const sendBtn       = document.getElementById("sendBtn");
@@ -18,14 +14,8 @@ const newChatBtn    = document.getElementById("newChatBtn");
 const chatHistory   = document.getElementById("chatHistory");
 const welcomeScreen = document.getElementById("welcomeScreen");
 const sidebar       = document.getElementById("sidebar");
-const statusDot     = document.querySelector(".status-dot");
-const statusText    = document.querySelector(".status-text");
-const sidebarToggle = document.getElementById("sidebarToggle");
-const topbarMenuBtn = document.getElementById("topbarMenuBtn");
 
-// ─────────────────────────────────────────────
-// 🔥 LOAD MODELS (FIX)
-// ─────────────────────────────────────────────
+// ✅ LOAD MODELS (FIX)
 async function loadModels() {
 try {
 const res = await fetch("/models");
@@ -45,53 +35,30 @@ modelSelect.value = data.default;
 ```
 
 } catch (err) {
-console.error("Failed to load models:", err);
+console.error("Model load error:", err);
 }
 }
 
-// ─────────────────────────────────────────────
-// Sidebar Toggle
-// ─────────────────────────────────────────────
+// Sidebar toggle
 function toggleSidebar() {
 sidebarOpen = !sidebarOpen;
 sidebar.classList.toggle("collapsed", !sidebarOpen);
 }
 
-sidebarToggle.addEventListener("click", toggleSidebar);
-topbarMenuBtn.addEventListener("click", toggleSidebar);
-
-// ─────────────────────────────────────────────
-// Status Indicator
-// ─────────────────────────────────────────────
-function setStatus(state) {
-if (state === "thinking") {
-statusDot.classList.add("thinking");
-statusText.textContent = "Thinking…";
-} else {
-statusDot.classList.remove("thinking");
-statusText.textContent = "Ready";
-}
-}
-
-// ─────────────────────────────────────────────
-// Send Message
-// ─────────────────────────────────────────────
+// Send message
 async function sendMessage() {
 const text = userInput.value.trim();
 if (!text || isLoading) return;
 
 isLoading = true;
 sendBtn.disabled = true;
-userInput.value = "";
 
 const model = modelSelect.value;
 
 try {
 const res = await fetch("/chat", {
 method: "POST",
-headers: {
-"Content-Type": "application/json"
-},
+headers: {"Content-Type": "application/json"},
 body: JSON.stringify({
 chat_id: currentChatId,
 message: text,
@@ -106,7 +73,11 @@ if (data.error) {
   alert(data.error);
 } else {
   currentChatId = data.chat_id;
-  console.log("Response:", data.response);
+
+  // ✅ UI render (important)
+  const div = document.createElement("div");
+  div.innerHTML = "<b>You:</b> " + text + "<br><b>AI:</b> " + data.response;
+  chatFeed.appendChild(div);
 }
 ```
 
@@ -114,19 +85,13 @@ if (data.error) {
 console.error(err);
 }
 
+userInput.value = "";
 isLoading = false;
 sendBtn.disabled = false;
 }
 
-sendBtn.addEventListener("click", sendMessage);
-
-// ─────────────────────────────────────────────
-// Init
-// ─────────────────────────────────────────────
-(async function init() {
-
-await loadModels();   // 🔥 IMPORTANT FIX
-
+// New Chat
+async function startNewChat() {
 try {
 const res = await fetch("/new_chat", { method: "POST" });
 const data = await res.json();
@@ -135,4 +100,22 @@ currentChatId = data.chat_id;
 currentChatId = Date.now().toString();
 }
 
+chatFeed.innerHTML = "";
+}
+
+// Events
+sendBtn.addEventListener("click", sendMessage);
+newChatBtn.addEventListener("click", startNewChat);
+
+// INIT
+(async function init() {
+await loadModels();   // 🔥 FIX
+
+try {
+const res = await fetch("/new_chat", { method: "POST" });
+const data = await res.json();
+currentChatId = data.chat_id;
+} catch {
+currentChatId = Date.now().toString();
+}
 })();
