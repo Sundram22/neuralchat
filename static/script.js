@@ -244,42 +244,34 @@ async function sendMessage() {
 sendBtn.addEventListener("click", sendMessage);
 
 // ─────────────────────────────────────────────
-// New Chat
-// ─────────────────────────────────────────────
 async function startNewChat() {
-  try {
-    const res = await fetch("/new_chat", { method: "POST" });
-    const data = await res.json();
-    currentChatId = data.chat_id;
-  } catch {
-    currentChatId = generateId();
-  }
+try {
+const res = await fetch("/new_chat", { method: "POST" });
+const data = await res.json();
+currentChatId = data.chat_id;
+} catch {
+currentChatId = generateId();
+}
 
-  // Clear feed
-  chatFeed.innerHTML = "";
+// Clear feed
+chatFeed.innerHTML = "";
 
-  // Re-insert welcome screen
-  const welcome = document.createElement("div");
-  welcome.className = "welcome-screen";
-  welcome.id = "welcomeScreen";
-  welcome.innerHTML = `
-    <div class="welcome-glow"></div>
-    <div class="welcome-icon">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-    </div>
-    <h1 class="welcome-title">NeuralChat</h1>
-    <p class="welcome-sub">Your intelligent AI companion, powered by the world's best models.</p>
-    <div class="welcome-chips">
-      <button class="chip" onclick="injectPrompt('Explain quantum computing in simple terms')">⚛️ Explain quantum computing</button>
-      <button class="chip" onclick="injectPrompt('Write a Python function to sort a list of dictionaries by a key')">💻 Write Python code</button>
-      <button class="chip" onclick="injectPrompt('Give me 5 creative startup ideas for 2025')">💡 Startup ideas for 2025</button>
-      <button class="chip" onclick="injectPrompt('Summarise the key differences between React and Vue')">📝 React vs Vue</button>
-    </div>
+// Re-insert welcome screen (FULL UI)
+const welcome = document.createElement("div");
+welcome.className = "welcome-screen";
+welcome.id = "welcomeScreen";
+welcome.innerHTML = `     <div class="welcome-glow"></div>     <div class="welcome-icon">       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">         <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>       </svg>     </div>     <h1 class="welcome-title">NeuralChat</h1>     <p class="welcome-sub">Your intelligent AI companion, powered by the world's best models.</p>     <div class="welcome-chips">       <button class="chip" onclick="injectPrompt('Explain quantum computing in simple terms')">⚛️ Explain quantum computing</button>       <button class="chip" onclick="injectPrompt('Write a Python function to sort a list of dictionaries by a key')">💻 Write Python code</button>       <button class="chip" onclick="injectPrompt('Give me 5 creative startup ideas for 2025')">💡 Startup ideas for 2025</button>       <button class="chip" onclick="injectPrompt('Summarise the key differences between React and Vue')">📝 React vs Vue</button>     </div>
   `;
-  chatFeed.appendChild(welcome);
+chatFeed.appendChild(welcome);
 
-  deactivateAllHistory();
-  userInput.focus();
+deactivateAllHistory();
+userInput.focus();
+
+// 🔥 MOBILE FIX (AUTO CLOSE SIDEBAR)
+if (window.innerWidth < 768) {
+sidebar.classList.add("collapsed");
+sidebarOpen = false;
+}
 }
 
 newChatBtn.addEventListener("click", startNewChat);
